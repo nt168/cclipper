@@ -1,0 +1,6 @@
+declare -- FUNC_NAME=zbx_ipc_service_start
+declare -- RET_TYPE=int
+declare -- count=3
+declare -a PARAM_TYPES=([1]="zbx_ipc_service_t" [2]="const char" [3]="char")
+declare -a PARAM_PTRS=([1]="*" [2]="*" [3]="**")
+declare -a PARAM_NAMES=([1]="service" [2]="service_name" [3]="error")
