@@ -47,19 +47,24 @@ for symbol in "${SYMBOL_ARRAY[@]}"; do
             best_file=""
             for file in $matches; do
                 basename_file=$(basename "$file")
-                
+
+                # 跳过输出目录中已存在的同名文件，避免误判为已满足
+                if [[ -f "${OUTPUT_DIR}/src/${basename_file}" ]]; then
+                    continue
+                fi
+
                 # 优先选择 algodefs.c（通常包含基础函数）
                 if [[ "$basename_file" == "algodefs.c" ]]; then
                     best_file="$file"
                     break
                 fi
-                
-                # 其次选择当前文件名
+
+                # 其次选择第一个可用文件
                 if [[ -z "$best_file" ]]; then
                     best_file="$file"
                 fi
             done
-            
+
             if [[ -n "$best_file" ]]; then
                 found="$best_file"
                 found_file=$(basename "$best_file")
@@ -86,16 +91,15 @@ for symbol in "${SYMBOL_ARRAY[@]}"; do
                 fi
                 
                 # 检查文件是否已在输出目录
-                if [[ ! -f "${OUTPUT_DIR}/src/${basename_file}" ]]; then
-                    found="$file"
-                    found_file="$basename_file"
-                    echo "    ✓ 找到: $found"
-                    break
-                else
-                    echo "    ✓ 已存在: $basename_file"
-                    found="exists"
-                    break
+                if [[ -f "${OUTPUT_DIR}/src/${basename_file}" ]]; then
+                    echo "    ⚠ 跳过已存在文件: $basename_file"
+                    continue
                 fi
+
+                found="$file"
+                found_file="$basename_file"
+                echo "    ✓ 找到: $found"
+                break
             done
         fi
     fi
@@ -103,7 +107,7 @@ for symbol in "${SYMBOL_ARRAY[@]}"; do
     if [[ -z "$found" ]]; then
         echo "    ✗ 未找到: $symbol (将生成简化实现)"
         NEEDS_STUB+=("$symbol")
-    elif [[ "$found" != "exists" && -f "$found" ]]; then
+    elif [[ -f "$found" ]]; then
         FOUND_FILES+=("$found")
     fi
 done

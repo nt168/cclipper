@@ -146,6 +146,13 @@ echo "  声明文件: ${DECL_FILE:-未找到}"
 echo
 echo "==> 步骤3: 创建独立项目..."
 
+# 清理旧的生成产物，避免历史文件影响本次编译
+if [[ -d "$OUTPUT_PATH" ]]; then
+    echo "  ⚠️  检测到已存在输出目录，正在清理旧文件..."
+    rm -rf "$OUTPUT_PATH/src" "$OUTPUT_PATH/include" "$OUTPUT_PATH/lib"
+    rm -f "$OUTPUT_PATH/Makefile" "$OUTPUT_PATH/README.md"
+fi
+
 mkdir -p "$OUTPUT_PATH"/{src,include}
 
 # 创建lib目录并添加说明
@@ -560,11 +567,19 @@ while [[ $iteration -lt $MAX_ITERATIONS ]]; do
     EXTRACT_SCRIPT="${SCRIPT_DIR}/extract_missing_functions.sh"
     if [[ -x "$EXTRACT_SCRIPT" ]]; then
         "$EXTRACT_SCRIPT" "$missing" "$PROJECT_PATH" "$OUTPUT_PATH"
+
+        # 为新提取的源文件补齐头文件依赖，避免下一轮因缺失头文件中断
+        if [[ -x "$ANALYZE_DEPS" ]]; then
+            for src_file in "$OUTPUT_PATH"/src/*.c; do
+                [[ -f "$src_file" ]] || continue
+                "$ANALYZE_DEPS" "$src_file" "$PROJECT_PATH" "$OUTPUT_PATH" 5
+            done
+        fi
     else
         echo "  ⚠️  未找到 extract_missing_functions.sh"
         break
     fi
-    
+
     cd - > /dev/null
 done
 
