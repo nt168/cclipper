@@ -1,6 +1,0 @@
-declare -- FUNC_NAME=zbx_hashmap_get
-declare -- RET_TYPE=int
-declare -- count=2
-declare -a PARAM_TYPES=([1]="zbx_hashmap_t" [2]="zbx_uint64_t")
-declare -a PARAM_PTRS=([1]="*" [2]="")
-declare -a PARAM_NAMES=([1]="hm" [2]="key")

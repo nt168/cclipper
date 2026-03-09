@@ -1,6 +1,0 @@
-declare -- FUNC_NAME=__hashmap_ensure_free_entry
-declare -- RET_TYPE=static\ void
-declare -- count=2
-declare -a PARAM_TYPES=([1]="zbx_hashmap_t" [2]="ZBX_HASHMAP_SLOT_T")
-declare -a PARAM_PTRS=([1]="*" [2]="*")
-declare -a PARAM_NAMES=([1]="hm" [2]="slot")

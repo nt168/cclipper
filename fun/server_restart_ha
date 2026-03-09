@@ -1,6 +1,0 @@
-declare -- FUNC_NAME=server_restart_ha
-declare -- RET_TYPE=static\ void
-declare -- count=1
-declare -a PARAM_TYPES=([1]="nt_rtc_t")
-declare -a PARAM_PTRS=([1]="*")
-declare -a PARAM_NAMES=([1]="rtc")
